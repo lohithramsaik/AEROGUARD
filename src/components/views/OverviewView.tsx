@@ -144,12 +144,12 @@ export const OverviewView: React.FC = () => {
       {/* 4. Live Parameter Cards (8 core aero parameters) */}
       <div>
         <div className="flex items-center justify-between mb-2 px-1">
-          <h3 className="text-xs font-bold font-mono tracking-wider text-slate-300 uppercase flex items-center gap-1.5">
+          <h3 className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-            <span>CRITICAL PROPULSION TELEMETRY BUS</span>
+            <span>Live Telemetry Channels</span>
           </h3>
-          <span className="text-[10px] font-mono text-slate-500">
-            AUTO-CALIBRATED • 8 CHANNELS SYNCHRONIZED
+          <span className="text-[11px] text-slate-400 font-sans">
+            8 Monitored Sensors
           </span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

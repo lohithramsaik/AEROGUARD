@@ -98,11 +98,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, isMob
           <div>
             <div className="text-[10px] uppercase tracking-wider font-mono text-cyan-400 font-semibold mb-0.5 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-              <span>AVIONICS NAVIGATION</span>
+              <span>SYSTEM VIEWS</span>
             </div>
-            <div className="text-[11px] text-slate-400 font-mono flex items-center gap-2">
-              <span>MISSION: PATROL-BRAVO</span>
-              <span className="text-emerald-400 font-semibold">AIRBORNE</span>
+            <div className="text-[11px] text-slate-400 flex items-center gap-2">
+              <span>Engine Status:</span>
+              <span className="text-emerald-400 font-semibold">Online</span>
             </div>
           </div>
           {onCloseMobile && (

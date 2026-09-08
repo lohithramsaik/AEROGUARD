@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Radio, Wifi, Clock, ShieldCheck, AlertCircle, AlertTriangle, Sparkles, Menu, X } from 'lucide-react';
+import { Radio, Wifi, Clock, ShieldCheck, AlertCircle, AlertTriangle, Sparkles, Menu, X, Info } from 'lucide-react';
 import { useEngine } from '../../context/EngineContext';
 import { useDemo } from '../../context/DemoContext';
 
@@ -11,10 +11,8 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ isMobileMenuOpen, onToggleMobileMenu }) => {
   const { status, dataSource, setDataSource } = useEngine();
   const { isDemoActive, startDemo, stopDemo, currentScenario } = useDemo();
-  const [time, setTime] = useState({
-    utc: '',
-    local: '',
-  });
+  const [time, setTime] = useState({ utc: '', local: '' });
+  const [showSpecsModal, setShowSpecsModal] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -31,7 +29,7 @@ export const Header: React.FC<HeaderProps> = ({ isMobileMenuOpen, onToggleMobile
 
   return (
     <header className="bg-[#0b1220]/95 backdrop-blur border-b border-[#1b2a47] px-4 py-2.5 flex items-center justify-between sticky top-0 z-50 text-slate-200">
-      {/* Left: Branding & Title */}
+      {/* Left: Clean Branding */}
       <div className="flex items-center space-x-3">
         {onToggleMobileMenu && (
           <button
@@ -42,99 +40,51 @@ export const Header: React.FC<HeaderProps> = ({ isMobileMenuOpen, onToggleMobile
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         )}
-        <div className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 text-cyan-400 shadow-[0_0_12px_rgba(0,240,255,0.2)]">
-          <Radio className="w-5 h-5 animate-pulse text-cyan-400" />
-          <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
-          </span>
-        </div>
-        <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-base font-bold tracking-wider text-white uppercase font-mono">
-              AI-Enabled Aero Engine Digital Twin
-            </h1>
-            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-cyan-950/80 text-cyan-300 border border-cyan-700/60 rounded tracking-widest font-mono">
-              v2.4-AERO
-            </span>
+
+        <div className="flex items-center space-x-2.5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-600/30 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shadow-sm">
+            <Radio className="w-4 h-4 text-cyan-400" />
           </div>
-          <p className="text-[11px] text-slate-400 tracking-wide flex items-center gap-2">
-            <span>UAV PROPULSION TELEMETRY & PREDICTIVE DIAGNOSTICS</span>
-          </p>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm md:text-base font-bold tracking-wide text-white font-sans">
+                AeroGuard
+              </h1>
+              <span className="text-[11px] text-slate-400 hidden sm:inline">
+                | Aero Engine Digital Twin
+              </span>
+              <span className="px-1.5 py-0.2 text-[10px] font-mono rounded bg-cyan-950/70 text-cyan-300 border border-cyan-700/50 hidden md:inline">
+                Rotax 916iSc
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Center/Right: Drone ID, Engine ID, Connection Status, LIVE Indicator, Clocks */}
-      <div className="flex items-center space-x-3 text-xs font-mono">
-        {/* Prominent Demo Mode Button */}
+      {/* Right: Streamlined Actions & Status */}
+      <div className="flex items-center space-x-2.5 text-xs font-sans">
+        {/* Demo Mode Button */}
         <button
           onClick={isDemoActive ? stopDemo : startDemo}
-          title={isDemoActive ? 'Click to Exit Predefined Demo Mode' : 'Click to Launch Automated Engine Twin Demo Tour'}
-          className={`px-3 py-1.5 rounded-lg border font-mono font-bold text-xs flex items-center space-x-2 transition-all duration-300 shadow-md ${
+          title={isDemoActive ? 'Click to Exit Demo Mode' : 'Click to Run 6-Scenario Demo Tour'}
+          className={`px-3 py-1.5 rounded-lg border font-semibold text-xs flex items-center space-x-1.5 transition-all shadow-sm ${
             isDemoActive
-              ? 'bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 text-white border-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.6)] animate-pulse ring-2 ring-purple-400/50'
-              : 'bg-gradient-to-r from-purple-950/90 via-indigo-950/90 to-purple-950/90 hover:from-purple-900/90 hover:to-indigo-900/90 text-purple-200 hover:text-white border-purple-500/70 hover:border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.35)] hover:shadow-[0_0_22px_rgba(168,85,247,0.55)]'
+              ? 'bg-purple-600 text-white border-purple-300 animate-pulse'
+              : 'bg-purple-950/70 hover:bg-purple-900/90 text-purple-200 border-purple-600/60'
           }`}
         >
-          <Sparkles className={`w-4 h-4 ${isDemoActive ? 'text-white animate-spin' : 'text-purple-300'}`} style={isDemoActive ? { animationDuration: '4s' } : undefined} />
-          <div className="flex flex-col text-left">
-            <span className="leading-tight flex items-center gap-1.5">
-              <span>{isDemoActive ? 'EXIT DEMO' : 'DEMO MODE'}</span>
-              {isDemoActive && (
-                <span className="text-[10px] px-1.5 py-0.2 rounded bg-purple-900/90 text-purple-200 border border-purple-400/60">
-                  SCENARIO {currentScenario.number}/6
-                </span>
-              )}
-            </span>
-            <span className="text-[9px] text-purple-300/80 font-normal hidden xl:inline">
-              {isDemoActive ? currentScenario.shortName : '6 Predefined Scenarios'}
-            </span>
-          </div>
+          <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+          <span>{isDemoActive ? `Exit Demo (${currentScenario.number}/6)` : 'Demo Mode'}</span>
         </button>
 
-        {/* Drone ID Badge */}
-        <div className="bg-[#0f192c] px-2.5 py-1.5 rounded border border-[#1e2f50] flex flex-col hidden sm:flex">
-          <span className="text-[9px] uppercase tracking-wider text-slate-400">Drone ID</span>
-          <span className="font-semibold text-cyan-300">UAV-AP-940X</span>
-        </div>
-
-        {/* Engine ID Badge */}
-        <div className="bg-[#0f192c] px-2.5 py-1.5 rounded border border-[#1e2f50] flex flex-col hidden md:flex">
-          <span className="text-[9px] uppercase tracking-wider text-slate-400">Engine ID</span>
-          <span className="font-semibold text-slate-200">ROTAX-916iSc-TC</span>
-        </div>
-
-        {/* Connection Status */}
-        <div className="bg-[#0f192c] px-2.5 py-1.5 rounded border border-[#1e2f50] flex items-center space-x-2 hidden lg:flex">
-          <Wifi className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-          <div className="flex flex-col">
-            <span className="text-[9px] uppercase tracking-wider text-slate-400">Bus Link</span>
-            <span className="text-emerald-400 font-semibold flex items-center gap-1">
-              CAN 2.0B / MAVLink <span className="text-[10px] text-slate-500">(12ms)</span>
-            </span>
-          </div>
-        </div>
-
-        {/* LIVE Stream Indicator */}
-        <div className="bg-emerald-950/40 border border-emerald-500/40 px-2.5 py-1.5 rounded flex items-center space-x-2">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-          </span>
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-emerald-300 tracking-widest">LIVE</span>
-            <span className="text-[9px] text-emerald-400/80">50 Hz TELEM</span>
-          </div>
-        </div>
-
-        {/* Engine Global Quick State */}
+        {/* Engine Status Pill */}
         <div
-          className={`px-2.5 py-1.5 rounded border flex items-center space-x-1.5 ${
+          className={`px-2.5 py-1 rounded-md border flex items-center space-x-1.5 font-medium ${
             status === 'NORMAL'
-              ? 'bg-emerald-950/30 border-emerald-600/50 text-emerald-300'
+              ? 'bg-emerald-950/40 border-emerald-600/50 text-emerald-300'
               : status === 'WARNING'
               ? 'bg-amber-950/40 border-amber-500/50 text-amber-300'
-              : 'bg-rose-950/50 border-rose-500/60 text-rose-300 animate-pulse'
+              : 'bg-rose-950/60 border-rose-500/60 text-rose-300 animate-pulse'
           }`}
         >
           {status === 'NORMAL' ? (
@@ -144,33 +94,73 @@ export const Header: React.FC<HeaderProps> = ({ isMobileMenuOpen, onToggleMobile
           ) : (
             <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
           )}
-          <span className="font-bold text-[11px] uppercase tracking-wider">
-            {status === 'NORMAL' ? 'NOMINAL' : status === 'WARNING' ? 'CAUTION' : 'FAULT DETECTED'}
+          <span className="text-[11px] uppercase tracking-wider font-mono font-bold">
+            {status === 'NORMAL' ? 'Normal' : status === 'WARNING' ? 'Warning' : 'Fault'}
           </span>
         </div>
 
-        {/* System Time Clocks */}
-        <div className="bg-[#0f192c] px-3 py-1.5 rounded border border-[#1e2f50] flex items-center space-x-2.5 hidden sm:flex">
-          <Clock className="w-3.5 h-3.5 text-cyan-400" />
-          <div className="flex flex-col">
-            <span className="text-[11px] font-bold text-cyan-200 tracking-wider">
-              {time.utc || '00:00:00 UTC'}
-            </span>
-            <span className="text-[9px] text-slate-400 tracking-normal">
-              LOC: {time.local || '00:00:00'}
-            </span>
-          </div>
+        {/* System Time */}
+        <div className="bg-[#0f192c] px-2.5 py-1 rounded border border-[#1e2f50] text-[11px] font-mono text-slate-300 hidden sm:flex items-center gap-1.5">
+          <Clock className="w-3 h-3 text-cyan-400" />
+          <span>{time.utc || '00:00:00 UTC'}</span>
         </div>
 
-        {/* Source Toggle for hardware readiness */}
+        {/* Simulator / Hardware Data Source Toggle */}
         <button
           onClick={() => setDataSource(dataSource === 'SIMULATOR' ? 'HARDWARE_STREAM' : 'SIMULATOR')}
-          title="Toggle between internal simulator and external hardware stream (ESP32/Raspberry Pi/MQTT)"
-          className="px-2 py-1 text-[10px] rounded border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 hidden sm:flex"
+          title="Toggle data source: Internal Simulator vs External Hardware Stream (MQTT/ESP32)"
+          className="px-2 py-1 text-[10px] font-mono rounded border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition hidden md:flex items-center gap-1"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-          <span>{dataSource === 'SIMULATOR' ? 'SIM DATA' : 'HW STREAM'}</span>
+          <span>{dataSource === 'SIMULATOR' ? 'SIM' : 'HW'}</span>
         </button>
+
+        {/* Specs & Connection Info Popover Button */}
+        <div className="relative hidden lg:block">
+          <button
+            onClick={() => setShowSpecsModal(!showSpecsModal)}
+            title="System Specifications & Bus Telemetry Link"
+            className="p-1.5 rounded border border-[#1e2f50] bg-[#0f192c] hover:bg-[#16243d] text-slate-400 hover:text-slate-200 transition"
+          >
+            <Info className="w-3.5 h-3.5" />
+          </button>
+
+          {showSpecsModal && (
+            <div className="absolute right-0 mt-2 w-64 p-3 bg-[#0d1629] border border-[#233758] rounded-xl shadow-2xl z-50 text-[11px] font-mono space-y-2">
+              <div className="flex items-center justify-between border-b border-[#1b2b48] pb-1.5 text-slate-300 font-semibold font-sans">
+                <span>Avionics & Bus Details</span>
+                <button
+                  onClick={() => setShowSpecsModal(false)}
+                  className="text-slate-500 hover:text-slate-300"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="space-y-1 text-slate-400">
+                <div className="flex justify-between">
+                  <span>Drone ID:</span>
+                  <span className="text-cyan-300 font-bold">UAV-AP-940X</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Engine:</span>
+                  <span className="text-slate-200">Rotax 916iSc-TC</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Bus Protocol:</span>
+                  <span className="text-emerald-400">CAN 2.0B / MAVLink</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Bus Latency:</span>
+                  <span className="text-slate-200">12 ms</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Stream Rate:</span>
+                  <span className="text-emerald-400">50 Hz LIVE</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
